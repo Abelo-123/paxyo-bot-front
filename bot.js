@@ -5,11 +5,11 @@ const cors = require('cors'); // Import cors
 const lastMessages = new Map(); // Stores { chatId: { messageId, text, imageUrl } }
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
-
-// const BOT_TOKEN = '7927459052:AAGXlfBCaNTA0BudGBogp6ciUSdbcnCYMLY';
+//const BOT_TOKEN = '7927459052:AAGXlfBCaNTA0BudGBogp6ciUSdbcnCYMLY';
 
 // Use polling (easiest for testing, works without a public server)
-const bot = new TelegramBot(BOT_TOKEN);
+//const bot = new TelegramBot(BOT_TOKEN);
+const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
 // 🔹 Store chat IDs and message IDs (in-memory for now; replace with a database for persistence)
 const userChatIds = new Set();
