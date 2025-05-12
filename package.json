@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "start": "node bot.js",
+    "build": "vite build",
     "deploy": "vite build && gh-pages -d dist"
   },
   "keywords": [],

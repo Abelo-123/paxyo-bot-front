@@ -5,7 +5,7 @@ const cors = require('cors'); // Import cors
 const lastMessages = new Map(); // Stores { chatId: { messageId, text, imageUrl } }
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
-//const BOT_TOKEN = '7927459052:AAGXlfBCaNTA0BudGBogp6ciUSdbcnCYMLY';
+//const BOT_TOKEN = '7521980411:AAGSn9KTZ38pBfo_Shp_DnQpt5vrA0rr5AY';
 
 // Use polling (easiest for testing, works without a public server)
 //const bot = new TelegramBot(BOT_TOKEN);
@@ -25,9 +25,24 @@ bot.onText(/\/start/, async (msg) => {
     // ✅ Save chatId to the in-memory set
     userChatIds.add(chatId);
 
-    // ✅ Send a welcome message
-    await bot.sendMessage(chatId, `👋 Hello @${username || 'friend'}! You’ll now get updates from me.`);
+    // ✅ Send welcome image with button to open mini app
+    await bot.sendPhoto(chatId, 'https://i.ibb.co/7tjtqYjQ/file-1736.jpg', {
+        caption: `👋 Hello @${username || 'friend'}!\nWelcome to Paxyo.\nClick below to open the app.`,
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    {
+                        text: '🦾 Open App',
+                        web_app: {
+                            url: 'https://paxyo.netlify.app/'
+                        }
+                    }
+                ]
+            ]
+        }
+    });
 });
+
 
 // 🔹 Function to send a message with optional image
 const sendTelegramMessage = async (chatId, text, imageUrl) => {
