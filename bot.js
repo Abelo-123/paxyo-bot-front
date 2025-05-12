@@ -180,7 +180,7 @@ app.listen(PORT, () => {
 });
 
 
-const WEBHOOK_URL = 'https://your-app-name.onrender.com/webhook';
+const WEBHOOK_URL = 'https://paxyo-bot-ywuk.onrender.com/webhook';
 
 bot.setWebHook(`${WEBHOOK_URL}/bot${BOT_TOKEN}`);
 
