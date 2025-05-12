@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-     "start": "node bot.js"
+    "start": "node bot.js",
+    "deploy": "vite build && gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
+    "gh-pages": "^5.0.0",
     "vite": "^4.0.0"
   }
 }
