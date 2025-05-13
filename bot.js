@@ -2,6 +2,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const express = require('express');
 const cors = require('cors'); // Import cors
+const fs = require('fs'); // Import file system module
+const { createClient } = require('@supabase/supabase-js'); // Import Supabase client
 const lastMessages = new Map(); // Stores { chatId: { messageId, text, imageUrl } }
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -11,9 +13,43 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 //const bot = new TelegramBot(BOT_TOKEN);
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
+// const SUPABASE_URL = process.env.SUPABASE_URL;
+// const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const SUPABASE_URL = "https://bihqharjyezzxhsghell.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpaHFoYXJqeWV6enhoc2doZWxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU5NzM0MjMsImV4cCI6MjA0MTU0OTQyM30.7W7Vpd7fol3UWLUFLqUiHty2hdTrD-H3-4LT78wveFk";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY); // Initialize Supabase client
+
 // 🔹 Store chat IDs and message IDs (in-memory for now; replace with a database for persistence)
 const userChatIds = new Set();
 const sentMessageIds = new Map(); // New map to track sent message IDs for each user
+
+// Load user chat IDs from Supabase
+const loadUserChatIds = async () => {
+    try {
+        const { data, error } = await supabase.from('user_chat_ids').select('chat_id');
+        if (error) throw error;
+
+        data.forEach((row) => userChatIds.add(row.chat_id));
+        console.log(`Loaded ${data.length} user chat IDs from Supabase.`);
+    } catch (error) {
+        console.error('Failed to load user chat IDs from Supabase:', error.message);
+    }
+};
+
+// Save a new user chat ID to Supabase
+const saveUserChatId = async (chatId) => {
+    try {
+        const { error } = await supabase.from('user_chat_ids').insert([{ chat_id: chatId }]);
+        if (error) throw error;
+
+        console.log(`User chat ID ${chatId} saved to Supabase.`);
+    } catch (error) {
+        console.error(`Failed to save user chat ID ${chatId} to Supabase:`, error.message);
+    }
+};
+
+// Call loadUserChatIds when the bot starts
+loadUserChatIds();
 
 // 🔹 On /start, get user ID and send welcome
 bot.onText(/\/start/, async (msg) => {
@@ -22,8 +58,9 @@ bot.onText(/\/start/, async (msg) => {
 
     console.log(`New user started bot: ${username || 'Unknown'} (Chat ID: ${chatId})`);
 
-    // ✅ Save chatId to the in-memory set
+    // ✅ Save chatId to the in-memory set and persist it
     userChatIds.add(chatId);
+    await saveUserChatId(chatId);
 
     // ✅ Send welcome image with button to open mini app
     await bot.sendPhoto(chatId, 'https://i.ibb.co/7tjtqYjQ/file-1736.jpg', {
