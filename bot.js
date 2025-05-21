@@ -94,21 +94,7 @@ const sendTelegramMessage = async (chatId, text, imageUrl, type, amount, uid, ti
                 console.log(`Message sent to chat ID ${chatId}:`, response);
                 return response.message_id; // Return the message ID
             }
-            else if (type = "deposit" && amount != null && tid == null && uid != null) {
-                const response = await bot.sendMessage(chatId, `New deposit from userID ${uid} with Amount ${amount}`);
-                console.log(`depsot msg sent to id ${chatId}:`, response);
-                return response.message_id;
-            }
-            else if (type = "newuser" && amount == null && tid == null && uid != null) {
-                const response = await bot.sendMessage(chatId, `New user ${uid}`);
-                console.log(`newuser msg sent to id ${chatId}:`, response);
-                return response.message_id;
-            }
-            else if (type = "ticket" && amount == null && uid == null && tid != null) {
-                const response = await bot.sendMessage(chatId, `New ticket ${tid}`);
-                console.log(`ticket msg sent to id ${chatId}:`, response);
-                return response.message_id;
-            }
+
         }
     } catch (error) {
         console.error(`Error sending message to chat ID ${chatId}:`, error.response?.data || error.message);
@@ -211,7 +197,9 @@ app.post('/api/sendToJohn', async (req, res) => {
     const uid = req.body.uid;
     const tid = req.body.tid;
 
-    const BOT_TOKEN = '7860107567:AAGH_k1ZUQifJtqh2aprVSzJ4PbcqoBwWJ4';
+
+    const BOT_TOKEN = process.env.BOT_TOKENB;
+    //const BOT_TOKEN = '7860107567:AAGH_k1ZUQifJtqh2aprVSzJ4PbcqoBwWJ4';
     const bot = new TelegramBot(BOT_TOKEN);
 
     const userIds = [5928771903, 779060335]; // List of user IDs
@@ -219,9 +207,9 @@ app.post('/api/sendToJohn', async (req, res) => {
     try {
         for (const userId of userIds) {
             if (type == "deposit" && uid != null && tid == null) {
-                await bot.sendMessage(userId, `💲 New deposit from ID:${uid} with Amount:${amount}`);
+                await bot.sendMessage(userId, `💲 New deposit from ${uid} with Amount:${amount}`);
             } else if (type == "newuser" && amount == null && tid == null) {
-                await bot.sendMessage(userId, `😀 New user ID:${uid}`);
+                await bot.sendMessage(userId, `😀 New user ${uid}`);
             } else if (type == "ticket" && amount == null && uid == null) {
                 await bot.sendMessage(userId, `🆓 New ticket ID: ${tid}`);
             }
