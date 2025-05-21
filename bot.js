@@ -82,16 +82,33 @@ bot.onText(/\/start/, async (msg) => {
 
 
 // 🔹 Function to send a message with optional image
-const sendTelegramMessage = async (chatId, text, imageUrl) => {
+const sendTelegramMessage = async (chatId, text, imageUrl, type, amount, uid, tid) => {
     try {
-        if (imageUrl) {
+        if (imageUrl && amount == null && uid == null) {
             const response = await bot.sendPhoto(chatId, imageUrl, { caption: text });
             console.log(`Photo sent to chat ID ${chatId}:`, response);
             return response.message_id; // Return the message ID
         } else {
-            const response = await bot.sendMessage(chatId, text);
-            console.log(`Message sent to chat ID ${chatId}:`, response);
-            return response.message_id; // Return the message ID
+            if (type == null && amount == null && uid == null && tid == null) {
+                const response = await bot.sendMessage(chatId, text);
+                console.log(`Message sent to chat ID ${chatId}:`, response);
+                return response.message_id; // Return the message ID
+            }
+            else if (type = "deposit" && amount != null && tid == null && uid != null) {
+                const response = await bot.sendMessage(chatId, `New deposit from userID ${uid} with Amount ${amount}`);
+                console.log(`depsot msg sent to id ${chatId}:`, response);
+                return response.message_id;
+            }
+            else if (type = "newuser" && amount == null && tid == null && uid != null) {
+                const response = await bot.sendMessage(chatId, `New user ${uid}`);
+                console.log(`newuser msg sent to id ${chatId}:`, response);
+                return response.message_id;
+            }
+            else if (type = "ticket" && amount == null && uid == null && tid != null) {
+                const response = await bot.sendMessage(chatId, `New ticket ${tid}`);
+                console.log(`ticket msg sent to id ${chatId}:`, response);
+                return response.message_id;
+            }
         }
     } catch (error) {
         console.error(`Error sending message to chat ID ${chatId}:`, error.response?.data || error.message);
@@ -107,7 +124,7 @@ const broadcastMessage = async (text, imageUrl) => {
         console.log(`Attempting to send message to chat ID: ${chatId}`);
 
         try {
-            const messageId = await sendTelegramMessage(chatId, text, imageUrl);
+            const messageId = await sendTelegramMessage(chatId, text, imageUrl, type = null);
             sentMessageIds.set(chatId, messageId);
             lastMessages.set(chatId, { messageId, text, imageUrl }); // Save full context
             // Store the message ID for this user
@@ -131,6 +148,7 @@ const deleteAllBroadcastMessages = async () => {
         }
     }
 };
+
 
 
 // 🔹 Express server setup
@@ -179,13 +197,42 @@ app.post('/api/sendToUser', async (req, res) => {
         return res.status(400).send('Chat ID and message are required');
     }
     try {
-        const messageId = await sendTelegramMessage(chatId, message, imageUrl);
+        const messageId = await sendTelegramMessage(chatId, message, imageUrl, type = null);
         res.send({ messageId }); // Return the message ID
     } catch (error) {
         console.error(`Failed to send message to user with Chat ID ${chatId}:`, error.message);
         res.status(500).send('Failed to send message to user');
     }
 });
+
+app.post('/api/sendToJohn', async (req, res) => {
+    const amount = req.body.amount;
+    const type = req.body.type;
+    const uid = req.body.uid;
+    const tid = req.body.tid;
+
+    const BOT_TOKEN = '7860107567:AAGH_k1ZUQifJtqh2aprVSzJ4PbcqoBwWJ4';
+    const bot = new TelegramBot(BOT_TOKEN);
+
+    const userIds = [5928771903, 779060335]; // List of user IDs
+
+    try {
+        for (const userId of userIds) {
+            if (type == "deposit" && uid != null && tid == null) {
+                await bot.sendMessage(userId, `💲 New deposit from ID:${uid} with Amount:${amount}`);
+            } else if (type == "newuser" && amount == null && tid == null) {
+                await bot.sendMessage(userId, `😀 New user ID:${uid}`);
+            } else if (type == "ticket" && amount == null && uid == null) {
+                await bot.sendMessage(userId, `🆓 New ticket ID: ${tid}`);
+            }
+        }
+        res.send('Messages sent successfully'); // Return success response
+    } catch (error) {
+        console.error(`Failed to send message to users:`, error.message);
+        res.status(500).send('Failed to send message to users');
+    }
+});
+
 
 // Endpoint to delete a message for all users
 app.post('/api/deleteAllMessages', async (req, res) => {
