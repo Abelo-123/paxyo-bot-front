@@ -196,7 +196,7 @@ app.post('/api/sendToJohn', async (req, res) => {
     const type = req.body.type;
     const uid = req.body.uid;
     const tid = req.body.tid;
-
+    const uuid = req.body.uuid;
 
     //const BOT_TOKEN = process.env.BOT_TOKENB;
     const BOT_TOKEN = '7860107567:AAGH_k1ZUQifJtqh2aprVSzJ4PbcqoBwWJ4';
@@ -207,11 +207,11 @@ app.post('/api/sendToJohn', async (req, res) => {
     try {
         for (const userId of userIds) {
             if (type == "deposit" && uid != null && tid == null) {
-                await bot.sendMessage(userId, `💲 New deposit from ${uid} with Amount:${amount}`);
+                await bot.sendMessage(userId, `💲 New deposit from ${uid} ${uuid} with amount ${amount}`);
             } else if (type == "newuser" && amount == null && tid == null) {
-                await bot.sendMessage(userId, `😀 New user ${uid}`);
-            } else if (type == "ticket" && amount == null && uid == null) {
-                await bot.sendMessage(userId, `🆓 New ticket ID: ${tid}`);
+                await bot.sendMessage(userId, `😀 New user ${uid} with ${uuid}`);
+            } else if (type == "ticket" && amount == null) {
+                await bot.sendMessage(userId, `🆓 New ticket ID: ${tid} from ${uid}`);
             }
         }
         res.send('Messages sent successfully'); // Return success response
