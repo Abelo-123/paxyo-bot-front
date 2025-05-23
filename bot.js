@@ -62,7 +62,7 @@ bot.onText(/\/start/, async (msg) => {
     userChatIds.add(chatId);
     await saveUserChatId(chatId);
 
-    // ✅ Send welcome image with button to open mini app
+    // ✅ Send welcome image with buttoddn to open mini app
     await bot.sendPhoto(chatId, 'https://i.ibb.co/jkCk9tBy/photo-2025-05-23-14-11-37.jpg', {
         caption: `👋 Hello @${username || 'friend'}!\nWelcome to Paxyo.\nClick below to open the app.`,
         reply_markup: {
