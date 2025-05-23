@@ -63,7 +63,7 @@ bot.onText(/\/start/, async (msg) => {
     await saveUserChatId(chatId);
 
     // ✅ Send welcome image with button to open mini app
-    await bot.sendPhoto(chatId, 'https://i.ibb.co/7tjtqYjQ/file-1736.jpg', {
+    await bot.sendPhoto(chatId, 'https://i.ibb.co/jkCk9tBy/photo-2025-05-23-14-11-37.jpg', {
         caption: `👋 Hello @${username || 'friend'}!\nWelcome to Paxyo.\nClick below to open the app.`,
         reply_markup: {
             inline_keyboard: [
@@ -202,7 +202,7 @@ app.post('/api/sendToJohn', async (req, res) => {
     const BOT_TOKEN = '7860107567:AAGH_k1ZUQifJtqh2aprVSzJ4PbcqoBwWJ4';
     const bot = new TelegramBot(BOT_TOKEN);
 
-    const userIds = [5928771903, 779060335]; // List of user IDs
+    const userIds = [5928771903, 779060335, 460529558]; // List of user IDs
 
     try {
         for (const userId of userIds) {
