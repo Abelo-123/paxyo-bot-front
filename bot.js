@@ -195,6 +195,7 @@ app.post('/api/sendToJohn', async (req, res) => {
     const amount = req.body.amount;
     const type = req.body.type;
     const uid = req.body.uid;
+    const order = req.body.order;
     //const tid = req.body.tid;
     const uuid = req.body.uuid;
 
@@ -210,6 +211,8 @@ app.post('/api/sendToJohn', async (req, res) => {
                 await bot.sendMessage(userId, `💲 New deposit from ${uid} ${uuid} with amount ${amount}`);
             } else if (type == "newuser" && amount == null) {
                 await bot.sendMessage(userId, `😀 New user ${uid} with ${uuid}`);
+            } else if (type == "neworder" && amount == null) {
+                await bot.sendMessage(userId, `💨 New Oorder from ${uid} name ${order}`);
             } else if (type == "ticket" && amount == null) {
                 await bot.sendMessage(userId, `🆓 New ticket from ${uid}`);
             }
