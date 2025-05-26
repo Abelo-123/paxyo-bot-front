@@ -203,7 +203,7 @@ app.post('/api/sendToJohn', async (req, res) => {
     const BOT_TOKEN = '7860107567:AAGH_k1ZUQifJtqh2aprVSzJ4PbcqoBwWJ4';
     const bot = new TelegramBot(BOT_TOKEN);
 
-    const userIds = [5928771903, 779060335, 460529558]; // List of user IDs
+    const userIds = [5928771903, 779060335, 460529558]; // Liffrst of user IDs
 
     try {
         for (const userId of userIds) {
